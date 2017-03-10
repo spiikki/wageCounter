@@ -13,10 +13,15 @@ So I could get a proper job.
 
 ### Install
 
-Get HTML5 supporting browser
-Get git
-Clone this repo
+Get HTML5 supporting browser.
+Get git.
+Clone this repo.
 
 ### Execute
 
-Run/Open index.html
+Open index.html
+
+## After successful counting
+
+Check the code.
+Hire spiikki.
