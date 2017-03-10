@@ -31,8 +31,9 @@ function parseFile(event) {
 		// parse data to objects
 		var data = $.csv.toObjects(event.target.result);
 
-		// parse data to renderable log, (and store it in session)
-		log = parseLog(data);
+		// parse data to renderable log, and store it in session
+		var log = parseLog(data);
+		sessionStorage.worklog = JSON.stringify(log);
 
 		// send to renderer
 		renderLog(log);
@@ -47,6 +48,8 @@ function parseFile(event) {
 function parseLog(data) {
 
 	/*
+	Here is workLog format. Will be used and may be abused.
+
 	workLog = {
 		userID : {
 			username : "string",
@@ -60,15 +63,19 @@ function parseLog(data) {
 		}
 	}
 	*/
+
+	// setup THE workLog
 	var workLog = {};
 
-	// check all data rows
-	$(data).each(function(index, row) {
-		console.log(row);
+	// go through all data rows
+	$.each(data, function(index, row) {
+
+		// check if there is user in log, if not, create it
 		if(workLog[row["Person ID"]] === undefined) {
 			workLog[row["Person ID"]] = { username: row["Person Name"], log: {} };
 		}
 
+		// check if there is date in log, if not, create it
 		if(workLog[row["Person ID"]].log[row["Date"]] === undefined) {
 			workLog[row["Person ID"]].log[row["Date"]] = { hours: 0.0, evening_extra: 0.0, overtime_extra: 0.0 };
 		} 
@@ -86,7 +93,7 @@ function parseLog(data) {
 			totalHours += 24;
 		}
 
-		// how this works
+		// calculate minutesFix
 		// if you START later than full hour, it decreases worktime
 		// if you END later than full hour, it increases worktime
 		var minutesFix = -(startMinutes/60)+(endMinutes/60);
@@ -94,9 +101,70 @@ function parseLog(data) {
 		// apply minutesFix
 		totalHours += minutesFix;
 
+		// update hours
 		workLog[row["Person ID"]].log[row["Date"]].hours += totalHours;
+
+
+		// calculate evening work hours
+		// this looks like a hack, but it's better than trusting javascript dates.
+		var evening_extra = 0.0;
+
+		if(startHour > 6 && startHour < 18) {
+			// shift start in day
+			if(endHour > 18) {
+				// shift end in evening night
+				evening_extra = endHour - 18 + (endMinutes/60); 
+			} else if(endHour < 6) {
+				// shift end in evening morning
+				evening_extra = 6 + endHour + (endMinutes/60); 
+			}
+		} else {
+			// shift start in evening
+			if(endHour > 6 && endHour < 18) {
+				// shift end in day
+				if(startHour > 18) {
+					// start before midnight
+					evening_extra = 24 - startHour + 6 - (startMinutes/60);
+				} else {
+					evening_extra = 6 - startHour - (startMinutes/60);
+				}
+			} else {
+				// shift end in evening
+				if(startHour > 18) {
+					// start before midnight
+					if(endHour > 18) {
+						// end before midnight
+						evening_extra = endHour - startHour + minutesFix;
+					} else {
+						// end after midnight
+						evening_extra = 24 - startHour + endHour + minutesFix;
+					}
+				} else {
+					// start after midnight
+					evening_extra = endHour - startHour + minutesFix;
+				}
+			}
+		}
+
+		// update evening_hours
+		workLog[row["Person ID"]].log[row["Date"]].evening_extra += evening_extra;
+
 	});
 
+	// next, when data parsed, parse overtime hours
+	$.each(workLog, function(index, user) {
+
+		$.each(user.log, function(index, logDate) {
+
+			if(logDate.hours > 8) {
+				logDate.overtime_extra = logDate.hours-8;
+			}
+
+		});
+
+	});
+
+	// all done! return parsed workLog
 	return workLog;
 
 }
