@@ -14,7 +14,9 @@ So I could get a proper job.
 ### Install
 
 Get HTML5 supporting browser.
+
 Get git.
+
 Clone this repo.
 
 ### Execute
@@ -26,10 +28,12 @@ You can find example .csv from examples directory.
 ## After successful calculations
 
 Check the code.
+
 Hire spiikki.
 
 ## After unsuccessful calculations
 
 Laugh at spiikki.
+
 Hire spiikki.
 
