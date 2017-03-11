@@ -1,0 +1,9 @@
+.user h3 {
+	background-color: rgb(120, 120, 120);
+	padding-left: 2em;
+}
+
+.details p {
+	background-color: rgb(180, 180, 180);
+	padding-left: 1em;
+}

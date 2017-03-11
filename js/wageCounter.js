@@ -201,19 +201,27 @@ function calculateWages(log) {
 
 // holy recursion, coderman!
 function calculateOvertimeBonus(hours, wages, raise) {
+
+	// don't let overtime compensation go over 100% of wage
 	if(raise > 1) raise = 1.00;
 
+	// if less than two hours to be calculated, count and return
 	if( hours <= 2 ) {
 		return hours * (wages.hourly * raise);
 	} else {
+		// otherwise count for two hours and iterate with higher compensation
 		return 2*(wages.hourly * raise) + calculateOvertimeBonus(hours-2, wages, raise*2);
 	}
 
 }
 
 function renderLog(log) {
-	console.log(log);
 
+	// i will round up wages for rendering
+	// this seems to be a JS nightmare
+	// http://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places
+
+	
 	// setup html to be injected to DOM
 	var html = "";
 
@@ -222,7 +230,7 @@ function renderLog(log) {
 
 		html += '<div class="user">';
 		html += '<h3>'+user.username+'</h3>';
-		html += '<h4> Monthly wage: $' + user.wage + '</h4>';
+		html += '<h4> Monthly wage: $' + user.wage.toFixed(2) + '</h4>';
 
 		html += '<a href="#" name="toggleDetails">Toggle details</a>';
 
@@ -234,7 +242,7 @@ function renderLog(log) {
 			html += 'Hours: ' + logDate.hours + '<br />';			
 			html += 'Evening hours: ' + logDate.evening_extra + '<br />';			
 			html += 'Overtime hours: ' + logDate.overtime_extra + '<br />';			
-			html += 'Daily wage: $' + logDate.wage + '<br />';			
+			html += 'Daily wage: $' + logDate.wage.toFixed(2) + '<br />';			
 			html += '</p>';
 		});
 		html += '</div>';

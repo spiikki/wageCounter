@@ -21,7 +21,15 @@ Clone this repo.
 
 Open index.html
 
-## After successful counting
+You can find example .csv from examples directory.
+
+## After successful calculations
 
 Check the code.
 Hire spiikki.
+
+## After unsuccessful calculations
+
+Laugh at spiikki.
+Hire spiikki.
+
