@@ -221,7 +221,6 @@ function renderLog(log) {
 	// this seems to be a JS nightmare
 	// http://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places
 
-	
 	// setup html to be injected to DOM
 	var html = "";
 
@@ -256,12 +255,25 @@ function renderLog(log) {
 
 	// handle toggling visibility of details
 	$('a[name=toggleDetails]').click(function(event) {
+
+		// if element is hidden, show it!
 		if($(event.target).next().css('display') === 'none') {
 			$(event.target).next().css('display','block');
 		} else {
+			// if it's shown, hide it.
 			$(event.target).next().css('display','none');
 		}
+
 	});
 	
-
 }
+
+/*
+
+..aaand we are done!
+
+Thank you for scrolling this far!
+
+Greetings to Eveangel (rakastan <3), Dekadence and Primitive!
+
+*/
